@@ -1,13 +1,16 @@
 import { renderToStaticMarkup } from'react-dom/server';
-import type { IncomingMessage, OutgoingMessage } from 'node:http';
 import type { FC } from 'react';
+import type { RouteHandler } from "~/types/route";
 
 const ServerComponent: FC = () => {
     return <h1>Hello World, from server component</h1>;
 }
 
-export const GET = async (req: IncomingMessage, res: OutgoingMessage) => {
+export const GET: RouteHandler = (req) => {
     const html = renderToStaticMarkup(<ServerComponent />);
-    res.setHeader('Content-Type', 'text/html');
-    res.end(html);
+    return new Response(html, {
+        headers: {
+            'Content-Type': 'text/html'
+        }
+    });
 };

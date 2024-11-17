@@ -1,5 +1,9 @@
-import type { IncomingMessage, OutgoingMessage } from 'node:http';
+import type { RouteHandler } from "~/types/route";
 
-export const GET = async (req: IncomingMessage, res: OutgoingMessage) => {
-    res.end('Hello World');
+export const GET: RouteHandler = (req) => {
+    return new Response('Hello World', {
+        headers: {
+            'Content-Type': 'text/plain'
+        }
+    });
 }

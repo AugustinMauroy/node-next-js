@@ -59,7 +59,18 @@ server.addListener('request', async (req, res) => {
     switch (req.method) {
         case 'GET':
             if (routeModule.GET) {
-                routeModule.GET(req, res);
+                const apiResp = routeModule.GET(req) as Response;
+                apiResp.headers.forEach((value, key) => {
+                    res.setHeader(key, value);
+                });
+                res.writeHead(apiResp.status);
+                await apiResp.body?.pipeTo(new WritableStream({
+                    write(chunk) {
+                        res.write(chunk);
+                    }
+                }));
+                res.end();
+                
                 return;
             } else {
                 res.writeHead(405);
@@ -69,7 +80,17 @@ server.addListener('request', async (req, res) => {
             break;
         case 'POST':
             if (routeModule.POST) {
-                routeModule.POST(req, res);
+                const apiResp = routeModule.POST(req) as Response;
+                apiResp.headers.forEach((value, key) => {
+                    res.setHeader(key, value);
+                });
+                res.writeHead(apiResp.status);
+                await apiResp.body?.pipeTo(new WritableStream({
+                    write(chunk) {
+                        res.write(chunk);
+                    }
+                }));
+                res.end();
                 return;
             } else {
                 res.writeHead(405);
